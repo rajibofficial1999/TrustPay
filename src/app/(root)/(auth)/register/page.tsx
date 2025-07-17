@@ -117,7 +117,7 @@ const Ragister = () => {
           Welcome to {appName} – Where Payments <br /> Meet Peace of Mind
         </h1>
         <p className="text-left md:text-center w-full mt-2">
-          Join 10,000+ creators and businesses who trust Sufahand for secure
+          Join 10,000+ creators and businesses who trust {appName} for secure
           transactions.
         </p>
         <form
