@@ -71,7 +71,7 @@ const AppAlertDialog = ({
                   <div className="flex items-start gap-1 mt-4 text-start italic">
                     <TriangleAlert className="size-4 text-yellow-600" />
                     <span className="text-sm text-destructive/70 -mt-0.5">
-                      <span className="font-semibold">Importand</span>:{" "}
+                      <span className="font-semibold">Important</span>:{" "}
                       {warningText}
                     </span>
                   </div>
@@ -116,7 +116,7 @@ const AppAlertDialog = ({
               <div className="flex items-start gap-1 mt-4 text-start italic">
                 <TriangleAlert className="size-4 text-yellow-600" />
                 <span className="text-sm text-destructive/70 -mt-0.5">
-                  <span className="font-semibold">Importand</span>:{" "}
+                  <span className="font-semibold">Important</span>:{" "}
                   {warningText}
                 </span>
               </div>
