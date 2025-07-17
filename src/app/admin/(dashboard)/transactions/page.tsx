@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { parseErrors } from "@/lib/utils";
+import { cn, parseErrors } from "@/lib/utils";
 import PhotoPreview from "@/components/photo-preview";
 
 interface ActionsType {
@@ -160,7 +160,16 @@ const TransactionsPage = () => {
                       </TableCell>
 
                       <TableCell className="py-3">
-                        <div className="grid grid-cols-3 gap-2">
+                        <div
+                          className={cn("grid gap-2", {
+                            "grid-cols-1":
+                              transaction.paymentScreenshots.length === 1,
+                            "grid-cols-2":
+                              transaction.paymentScreenshots.length === 2,
+                            "grid-cols-3":
+                              transaction.paymentScreenshots.length >= 3,
+                          })}
+                        >
                           {transaction.paymentScreenshots.map((screenshot) => (
                             <PhotoPreview
                               src={screenshot}
