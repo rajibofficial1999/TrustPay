@@ -19,14 +19,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const theads = [
-  "Name",
-  "Payment Key",
-  "Image",
-  "Logo",
-  "Description",
-  "Action",
-];
+const theads = ["Name", "Payment Key", "Image", "Logo", "Action"];
 
 const PaymentMethodPage = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -121,10 +114,6 @@ const PaymentMethodPage = () => {
                         ) : (
                           <span className="text-yellow-500">No logo</span>
                         )}
-                      </TableCell>
-
-                      <TableCell className="py-3">
-                        {paymentMethod.description || "No description"}
                       </TableCell>
 
                       <TableCell className="py-3 space-x-2">

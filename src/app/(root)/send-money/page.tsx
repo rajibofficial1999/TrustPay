@@ -185,7 +185,13 @@ const SendMoneyPage = () => {
                       )}
                     </li>
                   </ul>
-                  <div>{selectedPaymentMethod?.description}</div>
+                  <div className="payment-method-description">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: selectedPaymentMethod?.description || "",
+                      }}
+                    />
+                  </div>
                 </div>
               )
             )}

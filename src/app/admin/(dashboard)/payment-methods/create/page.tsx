@@ -3,6 +3,7 @@
 import { createPaymentMethod } from "@/actions/payment_method";
 import CustomButton from "@/components/custom-button";
 import ErrorMessage from "@/components/error-message";
+import TextAreaEditor from "@/components/text-editor/text-area-editor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,10 +21,14 @@ const PaymentMethodCreatePage = () => {
     handleSubmit,
     formState: { errors },
     setError,
+    setValue,
+    watch,
     reset,
   } = useForm<PaymentMethodFormData>({
     resolver: zodResolver(paymentMethodSchema),
   });
+
+  const description = watch("description");
 
   const {
     mutate: handleCreatePaymentMethod,
@@ -120,11 +125,10 @@ const PaymentMethodCreatePage = () => {
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              {...register("description")}
-              className="h-40"
-              placeholder="Enter description"
+
+            <TextAreaEditor
+              onChange={(content) => setValue("description", content)}
+              content={description || ""}
             />
 
             <ErrorMessage error={errors} label="description" />

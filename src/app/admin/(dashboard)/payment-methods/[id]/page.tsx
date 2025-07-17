@@ -6,9 +6,9 @@ import {
 } from "@/actions/payment_method";
 import CustomButton from "@/components/custom-button";
 import ErrorMessage from "@/components/error-message";
+import TextAreaEditor from "@/components/text-editor/text-area-editor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { parseErrors } from "@/lib/utils";
 import { paymentMethodSchema } from "@/lib/validator";
 
@@ -23,7 +23,11 @@ const PaymentMethodEditPage = () => {
   const params = useParams();
   const id = typeof params?.id === "string" ? params.id : undefined;
 
-  const { data: paymentMethod, isLoading } = useQuery<IPaymentMethod>({
+  const {
+    data: paymentMethod,
+    refetch,
+    isLoading,
+  } = useQuery<IPaymentMethod>({
     queryKey: ["paymentMethod", id],
     queryFn: () => getPaymentMethod(id as string),
     enabled: !!id,
@@ -34,11 +38,12 @@ const PaymentMethodEditPage = () => {
     handleSubmit,
     formState: { errors },
     setError,
-    reset,
     setValue,
   } = useForm<PaymentMethodFormData>({
     resolver: zodResolver(paymentMethodSchema),
   });
+
+  // const description = getValues("description");
 
   const {
     mutate: handleUpdatePaymentMethod,
@@ -46,8 +51,9 @@ const PaymentMethodEditPage = () => {
   } = useMutation({
     mutationFn: updatePaymentMethod,
     onSuccess: () => {
+      setValue("image", null);
       toast("Payment method updated successfully.");
-      reset();
+      refetch();
     },
     onError: (error: any) => {
       const message = parseErrors(error);
@@ -147,11 +153,10 @@ const PaymentMethodEditPage = () => {
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              {...register("description")}
-              className="h-40"
-              placeholder="Enter description"
+
+            <TextAreaEditor
+              onChange={(content) => setValue("description", content)}
+              content={paymentMethod?.description || ""}
             />
 
             <ErrorMessage error={errors} label="description" />

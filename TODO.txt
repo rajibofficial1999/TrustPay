@@ -1,4 +1,0 @@
-Payment description
-
-- Add payment description
-- ckeditor

@@ -159,4 +159,31 @@
   .container {
     @apply mx-auto max-w-screen-xl px-4;
   }
+
+  .payment-method-description h1 {
+    @apply text-lg sm:text-xl font-bold;
+  }
+
+  .payment-method-description h2 {
+    @apply text-xl font-semibold;
+  }
+
+  .payment-method-description h3 {
+    @apply font-semibold;
+  }
+
+  .tiptap h1 {
+    @apply text-lg sm:text-xl font-bold;
+  }
+
+  .tiptap h2 {
+    @apply text-xl font-semibold;
+  }
+
+  .tiptap h3 {
+    @apply font-semibold;
+  }
 }
+
+
+
