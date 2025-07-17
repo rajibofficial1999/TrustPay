@@ -1,10 +1,9 @@
-export const runtime = "nodejs";
-
 import { PaymentMethod } from "@/lib/models";
 import { NextRequest, NextResponse } from "next/server";
 
 import { parseFormData, uploadFile } from "@/lib/api/utils";
 import dbConnect from "@/lib/db";
+import { getToken } from "next-auth/jwt";
 
 export async function GET() {
   try {
@@ -26,6 +25,21 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     await dbConnect();
+
+    const token = await getToken({ req: request });
+    if (!token) {
+      return NextResponse.json(
+        { message: "Unauthorized: Token missing" },
+        { status: 401 }
+      );
+    }
+
+    if (token.role !== "admin") {
+      return NextResponse.json(
+        { message: "Unauthorized: Invalid token" },
+        { status: 401 }
+      );
+    }
 
     const { fields, files }: any = await parseFormData(request);
     const { name, paymentKey, description } = fields;

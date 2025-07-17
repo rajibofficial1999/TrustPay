@@ -15,6 +15,13 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    if (token.role !== "admin") {
+      return NextResponse.json(
+        { message: "Unauthorized: Invalid token" },
+        { status: 401 }
+      );
+    }
+
     const transactions = await Transaction.find({
       status: {
         $in: [

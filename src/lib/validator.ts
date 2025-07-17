@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { email, z } from "zod";
 
 export const signUpSchema = z.object({
   fullName: z
@@ -70,3 +70,35 @@ export const setPasswordSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+export const userCreateSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z
+    .string()
+    .nonempty("Email is required")
+    .email("Invalid email address"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d).{8,}$/,
+      "Password must be at least 8 characters long and contain at least one uppercase letter and one number"
+    ),
+});
+
+export const userUpdateSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z
+    .string()
+    .nonempty("Email is required")
+    .email("Invalid email address"),
+  password: z
+    .any()
+    .refine((value) => {
+      if (!value) return true;
+
+      const pattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+      return pattern.test(value);
+    }, "Password must be at least 8 characters long and contain at least one uppercase letter and one number")
+    .optional(),
+});

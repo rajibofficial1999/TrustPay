@@ -172,6 +172,11 @@
     @apply font-semibold;
   }
 
+  .payment-method-description p {
+    @apply text-sm md:text-base;
+  }
+
+
   .tiptap h1 {
     @apply text-lg sm:text-xl font-bold;
   }

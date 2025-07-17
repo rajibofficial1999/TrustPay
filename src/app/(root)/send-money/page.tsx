@@ -78,6 +78,12 @@ const SendMoneyPage = () => {
     return `Please use the ${by} provided below to send your payment via ${selectedPaymentMethod?.name}. Make sure the payment is sent correctly to avoid delays.`;
   };
 
+  const styledDescription = (description: string) => {
+    return description.replace(/(<p>.*?Note:.*?<\/p>)/gi, (match) =>
+      match.replace(/<p>/, `<p style="color: #e74c3c; font-style: italic;">`)
+    );
+  };
+
   useEffect(() => {
     if (data) {
       const fldata = data.filter((paymentMethod) => paymentMethod.isShow);
@@ -185,10 +191,12 @@ const SendMoneyPage = () => {
                       )}
                     </li>
                   </ul>
-                  <div className="payment-method-description">
+                  <div className="payment-method-description mt-5">
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: selectedPaymentMethod?.description || "",
+                        __html: styledDescription(
+                          selectedPaymentMethod?.description || ""
+                        ),
                       }}
                     />
                   </div>

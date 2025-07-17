@@ -1,6 +1,7 @@
 import { parseFormData, uploadFile } from "@/lib/api/utils";
 import dbConnect from "@/lib/db";
 import { PaymentMethod, Transaction, User } from "@/lib/models";
+import { pusher } from "@/lib/pusher";
 import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
@@ -111,6 +112,25 @@ export async function POST(request: NextRequest) {
     transaction.paymentScreenshotsPublicIds = [result.public_id];
 
     await transaction.save();
+
+    // Send notification to admin users
+    const adminIds = (
+      await User.find({ role: "admin" }).select("_id").lean()
+    ).map((user) => user._id);
+
+    const receiverIds = [...adminIds];
+
+    for (const receiverId of receiverIds) {
+      if (receiverId) {
+        const userId = receiverId.toString();
+
+        await pusher.trigger(
+          `private-user-${userId}`,
+          "transaction-created",
+          transaction
+        );
+      }
+    }
 
     return NextResponse.json(
       { message: "Transaction created successfully" },

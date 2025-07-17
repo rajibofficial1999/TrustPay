@@ -1,11 +1,44 @@
+"use client";
+
+import AdminNavbarDropdown from "@/components/admin-navbar-dropdown";
 import { AppSidebar } from "@/components/app-sidebar";
 import CustomSidebarButton from "@/components/custom-sidebar-button";
-import AdminNavbarDropdown from "@/components/admin-navbar-dropdown";
+import PageLoader from "@/components/page-loader";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { getServerSession } from "next-auth";
+import { pusherClient } from "@/lib/pusher-client";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
-const layout = async ({ children }: { children: React.ReactNode }) => {
-  const session = await getServerSession();
+const layout = ({ children }: { children: React.ReactNode }) => {
+  const session = useSession();
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (session && session.status === "authenticated") {
+      const { user } = session.data;
+      const channel = pusherClient.subscribe(`private-user-${user.id}`);
+
+      channel.bind("transaction-created", (_transaction: ITransaction) => {
+        const audio = new Audio("/media/sound.wav");
+        audio.play().catch((err) => {
+          console.error("Audio play failed:", err);
+        });
+
+        queryClient.invalidateQueries(["admin_transactions"] as any);
+      });
+
+      return () => {
+        channel.unbind_all();
+        channel.unsubscribe();
+      };
+    }
+  }, [session]);
+
+  if (session && session.status === "loading") {
+    return <PageLoader />;
+  }
 
   return (
     <SidebarProvider>
@@ -16,7 +49,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
             <CustomSidebarButton />
           </div>
           <div>
-            <AdminNavbarDropdown user={session?.user || null} />
+            <AdminNavbarDropdown user={session?.data?.user || null} />
           </div>
         </nav>
         <div className="p-[20px]">{children}</div>

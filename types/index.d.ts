@@ -7,6 +7,8 @@ import {
   signInSchema,
   signUpSchema,
   transactionSchema,
+  userCreateSchema,
+  userUpdateSchema,
 } from "@/lib/validator";
 
 declare global {
@@ -16,6 +18,8 @@ declare global {
   type TransactionFormData = z.infer<typeof transactionSchema>;
   type SetPasswordFormData = z.infer<typeof setPasswordSchema>;
   type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
+  type UserCreateFormData = z.infer<typeof userCreateSchema>;
+  type UserUpdateFormData = z.infer<typeof userUpdateSchema>;
 
   type TransactionStatus =
     | "approved"

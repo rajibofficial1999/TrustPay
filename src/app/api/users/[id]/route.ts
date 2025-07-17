@@ -1,7 +1,7 @@
 import cloudinary from "@/lib/api/cloudinary";
-import { parseFormData, uploadFile } from "@/lib/api/utils";
 import dbConnect from "@/lib/db";
-import { PaymentMethod, Transaction } from "@/lib/models";
+import { Transaction, User } from "@/lib/models";
+import { isStrongPassword } from "@/lib/utils";
 import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
@@ -34,25 +34,25 @@ export async function GET(
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid method id",
+          message: "Invalid user id",
         },
         { status: 400 }
       );
     }
 
-    const paymentMethod = await PaymentMethod.findById(id);
+    const user = await User.findById(id);
 
-    if (!paymentMethod) {
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
-          message: "Method not found",
+          message: "User not found",
         },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(paymentMethod, {
+    return NextResponse.json(user, {
       status: 200,
     });
   } catch (error: any) {
@@ -93,57 +93,61 @@ export async function PUT(
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid method id",
+          message: "Invalid user id",
         },
         { status: 400 }
       );
     }
 
-    const { fields, files }: any = await parseFormData(request);
-    const { name, paymentKey, description } = fields;
-    const { image, logo } = files;
+    const { fullName, email, password } = await request.json();
 
-    if (!name || !paymentKey) {
+    if (!fullName || !email) {
       return NextResponse.json(
-        { message: "Name, paymentKey and image are required" },
+        { message: "All fields are required" },
         { status: 400 }
       );
     }
 
-    const paymentMethod = await PaymentMethod.findById(id);
+    if (password && !isStrongPassword(password)) {
+      return NextResponse.json(
+        {
+          message:
+            "Password must be at least 8 characters long and contain at least one uppercase letter and one number",
+        },
+        { status: 400 }
+      );
+    }
 
-    if (!paymentMethod) {
+    const user = await User.findById(id);
+
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
-          message: "Method not found",
+          message: "User not found",
         },
         { status: 404 }
       );
     }
 
-    paymentMethod.name = name;
-    paymentMethod.paymentKey = paymentKey;
-    paymentMethod.description = description || null;
-
-    if (image) {
-      cloudinary.uploader.destroy(paymentMethod.imagePublicId);
-      const imageResult = (await uploadFile(files.image)) as any;
-      paymentMethod.image = imageResult.secure_url;
-      paymentMethod.imagePublicId = imageResult.public_id;
+    if (user.role !== "admin") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "You cannot update this user",
+        },
+        { status: 401 }
+      );
     }
 
-    if (logo) {
-      cloudinary.uploader.destroy(paymentMethod.logoPublicId);
-      const logoResult = (await uploadFile(files.logo)) as any;
-      paymentMethod.logo = logoResult.secure_url;
-      paymentMethod.logoPublicId = logoResult.public_id;
-    }
+    user.fullName = fullName;
+    user.email = email;
+    if (password) user.password = password;
 
-    await paymentMethod.save();
+    await user.save();
 
     return NextResponse.json(
-      { message: "Payment method updated successfully" },
+      { message: "Userupdated successfully" },
       {
         status: 200,
       }
@@ -187,26 +191,26 @@ export async function DELETE(
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid method id",
+          message: "Invalid user id",
         },
         { status: 400 }
       );
     }
 
-    const paymentMethod = await PaymentMethod.findById(id);
+    const user = await User.findById(id);
 
-    if (!paymentMethod) {
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
-          message: "Method not found",
+          message: "User not found",
         },
         { status: 404 }
       );
     }
 
     const transactions = await Transaction.find({
-      paymentMethod: paymentMethod._id,
+      user: user._id,
     });
 
     for (const transaction of transactions) {
@@ -216,21 +220,13 @@ export async function DELETE(
     }
 
     await Transaction.deleteMany({
-      paymentMethod: paymentMethod._id,
+      user: user._id,
     });
 
-    if (paymentMethod.imagePublicId) {
-      cloudinary.uploader.destroy(paymentMethod.imagePublicId);
-    }
-
-    if (paymentMethod.logoPublicId) {
-      cloudinary.uploader.destroy(paymentMethod.logoPublicId);
-    }
-
-    await paymentMethod.deleteOne();
+    await user.deleteOne();
 
     return NextResponse.json(
-      { message: "Payment method deleted successfully" },
+      { message: "User deleted successfully" },
       {
         status: 200,
       }

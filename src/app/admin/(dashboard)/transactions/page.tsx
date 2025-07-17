@@ -172,6 +172,7 @@ const TransactionsPage = () => {
                         >
                           {transaction.paymentScreenshots.map((screenshot) => (
                             <PhotoPreview
+                              key={screenshot}
                               src={screenshot}
                               alt="screenshot"
                               className="rounded-md cursor-pointer w-full h-16 object-cover border"
