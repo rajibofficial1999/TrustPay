@@ -21,6 +21,12 @@ declare global {
   type UserCreateFormData = z.infer<typeof userCreateSchema>;
   type UserUpdateFormData = z.infer<typeof userUpdateSchema>;
 
+  interface ProcessingStateProps {
+    cancelled: boolean;
+    refund_requested: boolean;
+    released: boolean;
+  }
+
   type TransactionStatus =
     | "approved"
     | "pending"

@@ -11,7 +11,6 @@ import CustomButton from "@/components/custom-button";
 import Loader from "@/components/loader";
 import PhotoPreview from "@/components/photo-preview";
 import TransactionStatus from "@/components/transaction-status";
-import { Badge } from "@/components/ui/badge";
 import { cn, formatted, parseErrors } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { LoaderCircle, Plus, WalletCards } from "lucide-react";
@@ -27,6 +26,12 @@ const TransactionDetailsPage = () => {
 
   const [openConfirm, setOpenConfirm] = useState(false);
   const [status, setStatus] = useState<TransactionStatus | null>(null);
+
+  const [processingState, setProcessingState] = useState<ProcessingStateProps>({
+    cancelled: false,
+    refund_requested: false,
+    released: false,
+  });
 
   const uploadRef = useRef<HTMLInputElement>(null);
 
@@ -52,6 +57,13 @@ const TransactionDetailsPage = () => {
     onError: (error: any) => {
       const message = parseErrors(error);
       setErrorMessage(message);
+    },
+    onSettled: () => {
+      setProcessingState({
+        cancelled: false,
+        refund_requested: false,
+        released: false,
+      });
     },
   });
 
@@ -149,7 +161,7 @@ const TransactionDetailsPage = () => {
                   <div className="hidden sm:inline-block">
                     <ClientStatusButton
                       transaction={transaction}
-                      statusProcessing={statusProcessing}
+                      processingState={processingState}
                       setOpenConfirm={setOpenConfirm}
                       setStatus={setStatus}
                     />
@@ -256,7 +268,7 @@ const TransactionDetailsPage = () => {
             <div className="flex justify-end mt-10 items-center w-full sm:hidden">
               <ClientStatusButton
                 transaction={transaction}
-                statusProcessing={statusProcessing}
+                processingState={processingState}
                 setOpenConfirm={setOpenConfirm}
                 setStatus={setStatus}
                 isMobile={true}
@@ -270,7 +282,10 @@ const TransactionDetailsPage = () => {
           setOpen={setOpenConfirm}
           onConfirm={() => {
             if (!status) return;
-
+            setProcessingState((prev) => ({
+              ...prev,
+              [status]: true,
+            }));
             handleStatus({ id: params.id as string, status });
           }}
           text={

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   transaction: ITransaction;
-  statusProcessing: boolean;
+  processingState: ProcessingStateProps;
   setOpenConfirm: React.Dispatch<React.SetStateAction<boolean>>;
   setStatus: React.Dispatch<React.SetStateAction<TransactionStatus | null>>;
   isMobile?: boolean;
@@ -12,7 +12,7 @@ interface Props {
 
 const ClientStatusButton: React.FC<Props> = ({
   transaction,
-  statusProcessing,
+  processingState,
   setOpenConfirm,
   setStatus,
   isMobile = false,
@@ -21,7 +21,7 @@ const ClientStatusButton: React.FC<Props> = ({
     <>
       {transaction.status === "pending" && (
         <CustomButton
-          processing={statusProcessing}
+          processing={processingState["cancelled"]}
           onClick={() => {
             setOpenConfirm(true);
             setStatus("cancelled");
@@ -41,7 +41,7 @@ const ClientStatusButton: React.FC<Props> = ({
           })}
         >
           <CustomButton
-            processing={statusProcessing}
+            processing={processingState["refund_requested"]}
             onClick={() => {
               setOpenConfirm(true);
               setStatus("refund_requested");
@@ -56,7 +56,7 @@ const ClientStatusButton: React.FC<Props> = ({
 
           {transaction?.status === "approved" && (
             <CustomButton
-              processing={statusProcessing}
+              processing={processingState["released"]}
               onClick={() => {
                 setOpenConfirm(true);
                 setStatus("released");
