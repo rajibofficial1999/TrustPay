@@ -11,13 +11,14 @@ import CustomButton from "@/components/custom-button";
 import Loader from "@/components/loader";
 import PaymentStatusBadge from "@/components/payment-status-badge";
 import PhotoPreview from "@/components/photo-preview";
+import { usePusher } from "@/contexts/pusher-context";
 import { cn, formatted, parseErrors } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { LoaderCircle, Plus, WalletCards } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const PaymentDetailsPage = () => {
   const params = useParams();
@@ -26,6 +27,8 @@ const PaymentDetailsPage = () => {
 
   const [openConfirm, setOpenConfirm] = useState(false);
   const [status, setStatus] = useState<PaymentStatus | null>(null);
+
+  const { channel } = usePusher();
 
   const [processingState, setProcessingState] = useState<ProcessingStateProps>({
     refund_requested: false,
@@ -69,7 +72,6 @@ const PaymentDetailsPage = () => {
     useMutation({
       mutationFn: uploadScreenshot,
       onSuccess: () => {
-        refetch();
         setPreviewImage(null);
         setErrorMessage("");
         if (uploadRef.current) {
@@ -101,6 +103,18 @@ const PaymentDetailsPage = () => {
 
     handleUploadScreenshot({ id: params.id as string, fd: formData });
   };
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind("payment-status-updated", (_payment: IPayment) => {
+        refetch();
+      });
+
+      return () => {
+        channel.unbind_all();
+      };
+    }
+  }, [channel]);
 
   return (
     <div className="container">

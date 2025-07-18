@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/db";
 import { Payment } from "@/lib/models";
+import { pusher } from "@/lib/pusher";
 import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
@@ -74,7 +75,14 @@ export async function PUT(
 
     const actions: ActionsType = {
       pending: ["approved", "cancelled", "failed"],
-      approved: ["cancelled", "refunded", "pending", "failed"],
+      approved: [
+        "cancelled",
+        "refunded",
+        "pending",
+        "failed",
+        "refund_requested",
+        "released",
+      ],
       released: ["cancelled", "refunded", "pending", "failed"],
       refunded: [],
       failed: ["cancelled", "refunded", "pending", "approved"],
@@ -91,6 +99,14 @@ export async function PUT(
     payment.status = status;
 
     await payment.save();
+
+    // Send notification to the user
+    const userId = payment.user.toString();
+    await pusher.trigger(
+      `private-user-${userId}`,
+      "payment-status-updated",
+      payment
+    );
 
     return NextResponse.json(
       { message: "Payment status updated successfully" },

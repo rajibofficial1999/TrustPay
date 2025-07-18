@@ -11,6 +11,7 @@ import Loader from "./loader";
 import PaymentStatusBadge from "./payment-status-badge";
 import ShowData from "./show-data";
 import { buttonVariants } from "./ui/button";
+import { usePusher } from "@/contexts/pusher-context";
 
 interface PaymentTableProps {
   isLimited?: boolean;
@@ -20,7 +21,9 @@ interface PaymentTableProps {
 const PaymentTable = ({ isLimited = false, className }: PaymentTableProps) => {
   const [payments, setPayments] = useState<IPayment[]>([]);
 
-  const { data, isPending } = useQuery<IPayment[]>({
+  const { channel } = usePusher();
+
+  const { data, isPending, refetch } = useQuery<IPayment[]>({
     queryKey: ["payments"],
     queryFn: () => getPayments(),
   });
@@ -35,6 +38,18 @@ const PaymentTable = ({ isLimited = false, className }: PaymentTableProps) => {
       setPayments(data);
     }
   }, [data, isLimited]);
+
+  useEffect(() => {
+    if (channel) {
+      channel.bind("payment-status-updated", (_payment: IPayment) => {
+        refetch();
+      });
+
+      return () => {
+        channel.unbind_all();
+      };
+    }
+  }, [channel]);
 
   return (
     <div className={cn("flex flex-col w-full", className)}>

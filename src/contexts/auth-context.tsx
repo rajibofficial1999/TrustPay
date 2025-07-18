@@ -2,22 +2,30 @@
 
 import { createContext, useContext, useState } from "react";
 
+interface AuthUserProps {
+  user: IUser | null;
+  loading: boolean;
+}
+
 interface AuthContextProps {
   user: IUser | null;
-  setAuthUser: (user: IUser | null) => void;
+  setAuthUser: ({ user, loading }: AuthUserProps) => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextProps | null>(null);
 
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const setAuthUser = (user: IUser | null) => {
+  const setAuthUser = ({ user, loading }: AuthUserProps) => {
     setUser(user);
+    setLoading(loading);
   };
 
   return (
-    <AuthContext.Provider value={{ user, setAuthUser }}>
+    <AuthContext.Provider value={{ user, setAuthUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

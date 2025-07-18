@@ -20,7 +20,10 @@ const MyAccount = () => {
     useMutation({
       mutationFn: deleteProfile,
       onSuccess: async () => {
-        setAuthUser(null);
+        setAuthUser({
+          user: null,
+          loading: false,
+        });
         await signOut();
       },
       onError: (error: any) => {

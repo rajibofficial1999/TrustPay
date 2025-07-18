@@ -8,7 +8,7 @@ import NavbarDropdown from "./navbar-dropdown";
 import { buttonVariants } from "./ui/button";
 
 const Navbar = () => {
-  const { user } = useAuthContext();
+  const { user, loading } = useAuthContext();
 
   const { isMobile } = useMediaQuery();
 
@@ -30,18 +30,19 @@ const Navbar = () => {
           alt="logo"
         />
       </Link>
-      {user ? (
-        <NavbarDropdown user={user} />
-      ) : (
-        <Link
-          href="/register"
-          className={buttonVariants({
-            className: "!rounded-full !px-4 py-5",
-          })}
-        >
-          Get Started
-        </Link>
-      )}
+      {!loading &&
+        (user ? (
+          <NavbarDropdown user={user} />
+        ) : (
+          <Link
+            href="/register"
+            className={buttonVariants({
+              className: "!rounded-full !px-4 py-5",
+            })}
+          >
+            Get Started
+          </Link>
+        ))}
     </div>
   );
 };

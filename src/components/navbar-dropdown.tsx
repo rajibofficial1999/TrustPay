@@ -17,7 +17,10 @@ const NavbarDropdown = ({ user }: { user: IUser }) => {
 
   const handleSignOut = async () => {
     try {
-      setAuthUser(null);
+      setAuthUser({
+        user: null,
+        loading: false,
+      });
       await signOut();
       toast("Successfully signed out.");
     } catch (error: any) {
