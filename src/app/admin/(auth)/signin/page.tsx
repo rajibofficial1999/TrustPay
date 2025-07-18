@@ -8,7 +8,6 @@ import { signInSchema } from "@/lib/validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle } from "lucide-react";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,7 +18,6 @@ const SignInPage = () => {
     register,
     handleSubmit,
     setError,
-
     formState: { errors, isSubmitting },
   } = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -52,9 +50,7 @@ const SignInPage = () => {
         return;
       }
 
-      if (response?.ok) {
-        router.push("/admin/dashboard");
-      }
+      router.push("/admin/dashboard");
       toast("Successfully signed in.");
     } catch (error: any) {
       setError("email", {
