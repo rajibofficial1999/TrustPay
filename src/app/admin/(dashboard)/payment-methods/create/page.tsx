@@ -30,10 +30,7 @@ const PaymentMethodCreatePage = () => {
 
   const description = watch("description");
 
-  const {
-    mutate: handleCreatePaymentMethod,
-    isPending: isCreatingPaymentMethod,
-  } = useMutation({
+  const { mutate: handleCreateMethod, isPending: isCreating } = useMutation({
     mutationFn: createPaymentMethod,
     onSuccess: () => {
       toast("Payment method created successfully.");
@@ -65,7 +62,7 @@ const PaymentMethodCreatePage = () => {
 
     formData.append("name", data.name);
     formData.append("paymentKey", data.paymentKey);
-    handleCreatePaymentMethod(formData);
+    handleCreateMethod(formData);
   };
 
   return (
@@ -136,7 +133,7 @@ const PaymentMethodCreatePage = () => {
 
           <div className="flex justify-end">
             <CustomButton
-              processing={isCreatingPaymentMethod}
+              processing={isCreating}
               className="w-auto rounded-md p-5 mt-0"
             >
               Submit

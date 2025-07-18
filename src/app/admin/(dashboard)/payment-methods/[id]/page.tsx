@@ -45,24 +45,22 @@ const PaymentMethodEditPage = () => {
 
   // const description = getValues("description");
 
-  const {
-    mutate: handleUpdatePaymentMethod,
-    isPending: isUpdatingPaymentMethod,
-  } = useMutation({
-    mutationFn: updatePaymentMethod,
-    onSuccess: () => {
-      setValue("image", null);
-      toast("Payment method updated successfully.");
-      refetch();
-    },
-    onError: (error: any) => {
-      const message = parseErrors(error);
-      setError("description", {
-        type: "manual",
-        message: message,
-      });
-    },
-  });
+  const { mutate: handleUpdatePaymentMethod, isPending: isUpdating } =
+    useMutation({
+      mutationFn: updatePaymentMethod,
+      onSuccess: () => {
+        setValue("image", null);
+        toast("Payment method updated successfully.");
+        refetch();
+      },
+      onError: (error: any) => {
+        const message = parseErrors(error);
+        setError("description", {
+          type: "manual",
+          message: message,
+        });
+      },
+    });
 
   const onSubmit = (data: PaymentMethodFormData) => {
     const formData = new FormData();
@@ -164,7 +162,7 @@ const PaymentMethodEditPage = () => {
 
           <div className="flex justify-end">
             <CustomButton
-              processing={isUpdatingPaymentMethod}
+              processing={isUpdating}
               className="w-auto rounded-md p-5 mt-0"
             >
               Submit

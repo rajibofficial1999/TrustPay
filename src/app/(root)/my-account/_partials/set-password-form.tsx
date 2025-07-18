@@ -33,27 +33,26 @@ const SetPasswordForm = () => {
     },
   });
 
-  const { mutate: handleUpdatePassword, isPending: isUpdatingPassword } =
-    useMutation({
-      mutationFn: updatePassword,
-      onSuccess: () => {
-        reset();
-        setPassword("");
-        setConfirmPassword("");
-        setMessage("Password updated successfully");
+  const { mutate: handleUpdatePassword, isPending: isUpdating } = useMutation({
+    mutationFn: updatePassword,
+    onSuccess: () => {
+      reset();
+      setPassword("");
+      setConfirmPassword("");
+      setMessage("Password updated successfully");
 
-        setTimeout(() => {
-          setMessage("");
-        }, 3000);
-      },
-      onError: (error: any) => {
-        const message = parseErrors(error);
-        setError("password", {
-          type: "manual",
-          message: message,
-        });
-      },
-    });
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+    },
+    onError: (error: any) => {
+      const message = parseErrors(error);
+      setError("password", {
+        type: "manual",
+        message: message,
+      });
+    },
+  });
 
   const onSubmit = (data: SetPasswordFormData) => {
     handleUpdatePassword({ password: data.password });
@@ -94,11 +93,7 @@ const SetPasswordForm = () => {
         <ErrorMessage error={errors} label="confirmPassword" />
       </div>
 
-      <CustomButton
-        processing={isUpdatingPassword}
-        type="submit"
-        className="mt-0"
-      >
+      <CustomButton processing={isUpdating} type="submit" className="mt-0">
         Save changes
       </CustomButton>
     </form>
