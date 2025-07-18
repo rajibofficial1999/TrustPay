@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const protectedRoutes = [
   "/my-account",
-  "/send-money",
+  "/make-payment",
   "/payments",
   "/admin/dashboard",
   "/admin/payments",

@@ -212,7 +212,7 @@ const SendMoneyPage = () => {
                   setProcessing(true);
                   setTimeout(() => {
                     router.push(
-                      `/send-money?method=${selectedPaymentMethod._id}`
+                      `/make-payment?method=${selectedPaymentMethod._id}`
                     );
                     setProcessing(false);
                   }, 2000);

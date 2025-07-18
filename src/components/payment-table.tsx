@@ -97,7 +97,7 @@ const PaymentTable = ({ isLimited = false, className }: PaymentTableProps) => {
       {isLimited && data && data.length > 5 && (
         <div className="text-center mt-5">
           <Link
-            href="/send-money"
+            href="/make-payment"
             className={buttonVariants({
               variant: "outline",
               className: "!rounded-full !px-4 py-5",

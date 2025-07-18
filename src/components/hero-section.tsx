@@ -90,7 +90,7 @@ const HeroSection = () => {
         </p>
 
         <Link
-          href="/send-money"
+          href="/make-payment"
           className={buttonVariants({
             className:
               "!rounded-full !p-6 sm:!p-8 mt-8 !font-bold text-lg sm:text-xl hover:scale-105 duration-200 relative z-50",
@@ -129,7 +129,7 @@ const HeroCard = ({
         className
       )}
     >
-      <Link href="/send-money" className="w-full h-full">
+      <Link href="/make-payment" className="w-full h-full">
         <div className="flex flex-col items-center gap-3 mb-2">
           {logo ? (
             <img src={logo} alt="logo" className="size-8 rounded-full" />

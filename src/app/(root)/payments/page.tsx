@@ -13,7 +13,7 @@ const PaymentPage = () => {
             <div className="flex justify-between items-center">
               <h1 className="text-xl font-bold">Payments</h1>
               <Link
-                href="/send-money"
+                href="/make-payment"
                 className={buttonVariants({
                   variant: "outline",
                   className: "!rounded-full !px-4 py-5",
