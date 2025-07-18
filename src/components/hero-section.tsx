@@ -99,7 +99,7 @@ const HeroSection = () => {
           Make a Payment
         </Link>
         <p className="text-foreground/80 mt-3">
-          Send & Receive with Confidence – Your Safety is Our Priority
+          Send & Receive with Confidence. Your Safety is Our Priority
         </p>
       </div>
     </div>

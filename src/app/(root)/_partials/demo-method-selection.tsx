@@ -7,7 +7,7 @@ const DemoMethodSelection = () => {
       <h3 className="font-semibold uppercase text-center">Pay now!</h3>
 
       <p className="text-center mt-2 text-sm">
-        Choose Your Preferred Payment Method – Fast, <br />
+        Choose Your Preferred Payment Method. Fast, <br />
         Secure & Always Protected.
       </p>
 
