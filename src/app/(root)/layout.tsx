@@ -47,17 +47,22 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    const isLoading =
+      session &&
+      (session.status === "authenticated" || session.status === "loading")
+        ? isPending
+        : false;
     if (!error) {
       setAuthUser({
-        user,
-        loading: isPending,
+        user: user || null,
+        loading: isLoading,
       });
     }
 
     if (!user && !isPending) {
       handleLogout();
     }
-  }, [user, error, isPending]);
+  }, [user, error, isPending, session]);
 
   if (session && session.status === "loading" && isPending) {
     return <PageLoader />;
