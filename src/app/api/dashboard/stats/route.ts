@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/db";
-import { PaymentMethod, Transaction } from "@/lib/models";
+import { PaymentMethod, Payment } from "@/lib/models";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const transactions = await Transaction.find({
+    const payments = await Payment.find({
       status: {
         $in: [
           "approved",
@@ -37,12 +37,11 @@ export async function GET(request: NextRequest) {
     const paymentMethods = await PaymentMethod.find().select("name logo");
 
     const data = paymentMethods.map((method) => {
-      const relatedTransactions = transactions.filter(
-        (transaction) =>
-          transaction.paymentMethod.toString() === method._id.toString()
+      const relatedpayments = payments.filter(
+        (payment) => payment.paymentMethod.toString() === method._id.toString()
       );
 
-      const totalEarnings = relatedTransactions.reduce(
+      const totalEarnings = relatedpayments.reduce(
         (sum, tx) => sum + tx.amount,
         0
       );

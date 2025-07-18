@@ -1,6 +1,6 @@
 import { parseFormData, uploadFile } from "@/lib/api/utils";
 import dbConnect from "@/lib/db";
-import { PaymentMethod, Transaction, User } from "@/lib/models";
+import { PaymentMethod, Payment, User } from "@/lib/models";
 import { pusher } from "@/lib/pusher";
 import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
@@ -23,12 +23,12 @@ export async function GET(request: NextRequest) {
       query = { user: token.id };
     }
 
-    const transactions = await Transaction.find(query)
+    const payments = await Payment.find(query)
       .sort({ createdAt: -1 })
       .populate("paymentMethod", "name logo")
       .populate("user", "email");
 
-    return NextResponse.json(transactions, {
+    return NextResponse.json(payments, {
       status: 200,
     });
   } catch (error: any) {
@@ -97,21 +97,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const transaction = new Transaction();
-    transaction.amount = amount;
-    transaction.phoneNumber = phoneNumber;
-    transaction.senderAccountHolderName = senderAccountHolderName;
-    transaction.destinationAcountKey = destinationAcountKey;
-    transaction.paymentMethod = paymentMethod._id;
-    transaction.user = token.id;
-    transaction.status = "pending";
+    const payment = new Payment();
+    payment.amount = amount;
+    payment.phoneNumber = phoneNumber;
+    payment.senderAccountHolderName = senderAccountHolderName;
+    payment.destinationAcountKey = destinationAcountKey;
+    payment.paymentMethod = paymentMethod._id;
+    payment.user = token.id;
+    payment.status = "pending";
 
     const result = (await uploadFile(paymentScreenshot)) as any;
 
-    transaction.paymentScreenshots = [result.secure_url];
-    transaction.paymentScreenshotsPublicIds = [result.public_id];
+    payment.paymentScreenshots = [result.secure_url];
+    payment.paymentScreenshotsPublicIds = [result.public_id];
 
-    await transaction.save();
+    await payment.save();
 
     // Send notification to admin users
     const adminIds = (
@@ -126,14 +126,14 @@ export async function POST(request: NextRequest) {
 
         await pusher.trigger(
           `private-user-${userId}`,
-          "transaction-created",
-          transaction
+          "payment-created",
+          payment
         );
       }
     }
 
     return NextResponse.json(
-      { message: "Transaction created successfully" },
+      { message: "Payment created successfully" },
       {
         status: 201,
       }

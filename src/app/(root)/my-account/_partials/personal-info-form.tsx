@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { parseErrors } from "@/lib/utils";
 import { personalInfoSchema } from "@/lib/validator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -28,12 +28,14 @@ const PersonalnfoForm = ({ user }: { user: IUser | null }) => {
     resolver: zodResolver(personalInfoSchema),
   });
 
+  const queryClient = useQueryClient();
+
   const { mutate: handleUpdateInfo, isPending: isUpdating } = useMutation({
     mutationFn: updateInfo,
     onSuccess: () => {
       reset();
+      queryClient.invalidateQueries(["user"] as any);
       setMessage("Profile updated successfully");
-
       setTimeout(() => {
         setMessage("");
       }, 3000);

@@ -1,11 +1,11 @@
 import dbConnect from "@/lib/db";
-import { Transaction } from "@/lib/models";
+import { Payment } from "@/lib/models";
 import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 interface ActionsType {
-  [key: string]: TransactionStatus[];
+  [key: string]: PaymentStatus[];
 }
 
 export async function PUT(
@@ -29,7 +29,7 @@ export async function PUT(
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid transaction id",
+          message: "Invalid payment id",
         },
         { status: 400 }
       );
@@ -60,16 +60,16 @@ export async function PUT(
       return NextResponse.json({ message: "Invalid status" }, { status: 400 });
     }
 
-    const transaction = await Transaction.findById(id);
+    const payment = await Payment.findById(id);
 
-    if (!transaction) {
+    if (!payment) {
       return NextResponse.json(
-        { message: "Transaction not found" },
+        { message: "Payment not found" },
         { status: 400 }
       );
     }
 
-    const currentStatus = transaction.status;
+    const currentStatus = payment.status;
 
     const actions: ActionsType = {
       pending: ["approved", "cancelled", "failed"],
@@ -87,12 +87,12 @@ export async function PUT(
       );
     }
 
-    transaction.status = status;
+    payment.status = status;
 
-    await transaction.save();
+    await payment.save();
 
     return NextResponse.json(
-      { message: "Transaction status updated successfully" },
+      { message: "Payment status updated successfully" },
       {
         status: 200,
       }

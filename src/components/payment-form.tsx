@@ -1,23 +1,23 @@
-import { createTransaction } from "@/actions/transaction";
+import { createPayment } from "@/actions/payment";
 import { parseErrors } from "@/lib/utils";
-import { transactionSchema } from "@/lib/validator";
+import { paymentSchema } from "@/lib/validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CheckCircle } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import CustomButton from "./custom-button";
 import ErrorMessage from "./error-message";
 import FileInput from "./file-input";
+import { Alert, AlertTitle } from "./ui/alert";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Alert, AlertTitle } from "./ui/alert";
-import { CheckCircle, PopcornIcon } from "lucide-react";
 
-interface TransactionFormProps {
+interface PaymentFormProps {
   method: string;
 }
 
-const TransactionForm = ({ method }: TransactionFormProps) => {
+const PaymentForm = ({ method }: PaymentFormProps) => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -31,8 +31,8 @@ const TransactionForm = ({ method }: TransactionFormProps) => {
     register,
     setError,
     formState: { errors },
-  } = useForm<TransactionFormData>({
-    resolver: zodResolver(transactionSchema),
+  } = useForm<PaymentFormData>({
+    resolver: zodResolver(paymentSchema),
     defaultValues: {
       amount: 0,
     },
@@ -53,32 +53,31 @@ const TransactionForm = ({ method }: TransactionFormProps) => {
     }
   };
 
-  const { mutate: handleCreateTransaction, isPending: isCreatingTransaction } =
-    useMutation({
-      mutationFn: createTransaction,
-      onSuccess: () => {
-        reset();
-        setAmount("");
-        setPreviewImage(null);
-        queryClient.invalidateQueries(["transactions"] as any);
-        setSuccessMessage(
-          "Your transaction has been submitted successfully. Wait for approval."
-        );
+  const { mutate: handleCreatePayment, isPending: isCreating } = useMutation({
+    mutationFn: createPayment,
+    onSuccess: () => {
+      reset();
+      setAmount("");
+      setPreviewImage(null);
+      queryClient.invalidateQueries(["payments"] as any);
+      setSuccessMessage(
+        "Your payment has been submitted successfully. Wait for approval."
+      );
 
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 3000);
-      },
-      onError: (error: any) => {
-        const message = parseErrors(error);
-        setError("paymentScreenshot", {
-          type: "manual",
-          message: message,
-        });
-      },
-    });
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+    },
+    onError: (error: any) => {
+      const message = parseErrors(error);
+      setError("paymentScreenshot", {
+        type: "manual",
+        message: message,
+      });
+    },
+  });
 
-  const onSubmit = (data: TransactionFormData) => {
+  const onSubmit = (data: PaymentFormData) => {
     const formData = new FormData();
 
     const paymentScreenshots = data.paymentScreenshot[0] as File;
@@ -90,7 +89,7 @@ const TransactionForm = ({ method }: TransactionFormProps) => {
     formData.append("destinationAcountKey", data.receiverAccount);
     formData.append("methodId", method);
 
-    handleCreateTransaction(formData);
+    handleCreatePayment(formData);
   };
 
   return (
@@ -171,7 +170,7 @@ const TransactionForm = ({ method }: TransactionFormProps) => {
           <ErrorMessage error={errors} label="paymentScreenshot" />
         </div>
 
-        <CustomButton type="submit" processing={isCreatingTransaction}>
+        <CustomButton type="submit" processing={isCreating}>
           Submit
         </CustomButton>
       </form>
@@ -179,4 +178,4 @@ const TransactionForm = ({ method }: TransactionFormProps) => {
   );
 };
 
-export default TransactionForm;
+export default PaymentForm;

@@ -20,13 +20,13 @@ const layout = ({ children }: { children: React.ReactNode }) => {
       const { user } = session.data;
       const channel = pusherClient.subscribe(`private-user-${user.id}`);
 
-      channel.bind("transaction-created", (_transaction: ITransaction) => {
+      channel.bind("payment-created", (_payment: IPayment) => {
         const audio = new Audio("/media/sound.wav");
         audio.play().catch((err) => {
           console.error("Audio play failed:", err);
         });
 
-        queryClient.invalidateQueries(["admin_transactions"] as any);
+        queryClient.invalidateQueries(["admin_payments"] as any);
       });
 
       return () => {

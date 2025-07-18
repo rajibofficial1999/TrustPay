@@ -42,7 +42,7 @@ const TermsPage = () => {
           <ListHeader>3. Payment & Escrow</ListHeader>
           <p>
             All payments made on {appName} are held in escrow until both the
-            buyer and seller confirm the transaction. Funds will not be released
+            buyer and seller confirm the payment. Funds will not be released
             without buyer approval, ensuring a secure exchange for both parties.
           </p>
         </div>
@@ -51,7 +51,7 @@ const TermsPage = () => {
         <div className="mt-10">
           <ListHeader>4. Prohibited Activities</ListHeader>
           <ul className="list-disc list-inside ml-2">
-            <li>Engaging in scams or fraudulent transactions</li>
+            <li>Engaging in scams or fraudulent payments</li>
             <li>Impersonating any person or entity</li>
             <li>Using the platform for illegal goods or services</li>
             <li>Violating any laws or third-party rights</li>

@@ -12,7 +12,7 @@ const AboutPage = () => {
 
         <p className="mt-10">
           Welcome to {appName}, a trusted escrow-based payment platform designed
-          to protect buyers and sellers in online transactions. In a world where
+          to protect buyers and sellers in online payments. In a world where
           digital scams are increasingly common, {appName} acts as a secure
           middleman to ensure that your money and goods are always safe.
         </p>
@@ -22,8 +22,8 @@ const AboutPage = () => {
           <p>
             Our mission is to provide a reliable and transparent way for
             individuals to buy and sell products or services online without the
-            fear of fraud. We help both parties complete the transaction with
-            confidence by holding funds in escrow until the transaction is
+            fear of fraud. We help both parties complete the payment with
+            confidence by holding funds in escrow until the payment is
             fulfilled.
           </p>
         </div>
@@ -44,7 +44,7 @@ const AboutPage = () => {
         <div className="mt-8">
           <h2 className="text-xl font-semibold mb-2">Why Choose Us</h2>
           <ul className="list-disc list-inside ml-2">
-            <li>Secure and transparent transactions</li>
+            <li>Secure and transparent payments</li>
             <li>Dispute resolution and buyer protection</li>
             <li>Trusted by thousands of users</li>
             <li>Fast and easy-to-use interface</li>
@@ -54,8 +54,8 @@ const AboutPage = () => {
         <div className="mt-8">
           <h2 className="text-xl font-semibold mb-2">Our Vision</h2>
           <p>
-            We envision a digital economy where every online transaction can be
-            done safely, confidently, and without the fear of being scammed.{" "}
+            We envision a digital economy where every online payment can be done
+            safely, confidently, and without the fear of being scammed.{" "}
             {appName} is here to make that vision a reality.
           </p>
         </div>

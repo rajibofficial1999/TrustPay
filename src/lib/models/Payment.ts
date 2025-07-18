@@ -1,6 +1,6 @@
 import mongoose, { model, Schema } from "mongoose";
 
-const transactionSchema = new Schema<ITransaction>(
+const paymentSchema = new Schema<IPayment>(
   {
     amount: {
       type: Number,
@@ -38,6 +38,5 @@ const transactionSchema = new Schema<ITransaction>(
   { timestamps: true }
 );
 
-export const Transaction =
-  mongoose.models.Transaction ||
-  model<ITransaction>("Transaction", transactionSchema);
+export const Payment =
+  mongoose.models.Payment || model<IPayment>("Payment", paymentSchema);

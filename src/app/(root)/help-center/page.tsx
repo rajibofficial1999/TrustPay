@@ -22,7 +22,7 @@ const HelpCenterPage = () => {
             <p>
               To make a payment, log in to your account, choose the recipient,
               enter the amount, and follow the secure payment steps. Your funds
-              will be held in escrow until the transaction is confirmed.
+              will be held in escrow until the payment is confirmed.
             </p>
           </div>
 
@@ -71,10 +71,10 @@ const HelpCenterPage = () => {
 
           <div>
             <h2 className="text-xl font-semibold mb-2">
-              6. Can I cancel a transaction?
+              6. Can I cancel a payment?
             </h2>
             <p>
-              If the transaction hasn’t been confirmed yet, you can request a
+              If the payment hasn’t been confirmed yet, you can request a
               cancellation. The funds will only be refunded if the seller hasn’t
               fulfilled their part of the agreement.
             </p>

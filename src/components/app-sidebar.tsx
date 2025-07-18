@@ -28,8 +28,8 @@ const items = [
     icon: ListCollapse,
   },
   {
-    title: "Transactions",
-    url: "/admin/transactions",
+    title: "Payments",
+    url: "/admin/payments",
     icon: ListCollapse,
   },
   {

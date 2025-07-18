@@ -38,8 +38,8 @@ const HomePage = () => {
             The Secure Way to Send & Receive Payments
           </h1>
           <p className="mt-3">
-            Where Trust Meets Transaction – Secure, Simple, and Seamless
-            Payments Every Time.
+            Where Trust Meets Payment Secure, Simple, and Seamless Payments
+            Every Time.
           </p>
 
           <div className="flex justify-between items-center mt-10 gap-2 flex-col md:flex-row">
@@ -89,8 +89,8 @@ const HomePage = () => {
                 <CheckCircle className="size-8 mt-1" />
               </div>
               <p className="text-left text-xl">
-                We monitor all transactions and user behavior to catch
-                suspicious activity before it becomes a problem.
+                We monitor all payments and user behavior to catch suspicious
+                activity before it becomes a problem.
               </p>
             </li>
           </ul>

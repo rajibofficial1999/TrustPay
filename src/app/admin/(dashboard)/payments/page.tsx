@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  deleteTransaction,
-  getTransactions,
-  updateTransactionStatus,
-} from "@/actions/transaction";
+  deletePayment,
+  getPayments,
+  updatePaymentStatus,
+} from "@/actions/payment";
 import AppAlertDialog from "@/components/app-alert-dialog";
 import AppTable from "@/components/app-table";
 
@@ -14,10 +14,10 @@ import { TableCell, TableRow } from "@/components/ui/table";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { LoaderCircle, Trash } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import PhotoPreview from "@/components/photo-preview";
 import {
   Select,
   SelectContent,
@@ -27,10 +27,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn, parseErrors } from "@/lib/utils";
-import PhotoPreview from "@/components/photo-preview";
 
 interface ActionsType {
-  [key: string]: TransactionStatus[];
+  [key: string]: PaymentStatus[];
 }
 
 const theads = [
@@ -51,15 +50,15 @@ const actions: ActionsType = {
   refund_requested: ["refunded"],
 };
 
-const TransactionsPage = () => {
+const PaymentsPage = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const [deleteableId, setDeleteableId] = useState<string | null>(null);
 
   const { mutate: handleDelete, isPending: isDeleting } = useMutation({
-    mutationFn: deleteTransaction,
+    mutationFn: deletePayment,
     onSuccess: () => {
-      toast("Transaction deleted successfully.");
+      toast("Payment deleted successfully.");
       setOpenConfirm(false);
       setDeleteableId(null);
       refetch();
@@ -70,13 +69,13 @@ const TransactionsPage = () => {
   });
 
   const {
-    data: transactions,
+    data: payments,
     isLoading,
     error,
     refetch,
-  } = useQuery<ITransaction[]>({
-    queryKey: ["admin_transactions"],
-    queryFn: getTransactions,
+  } = useQuery<IPayment[]>({
+    queryKey: ["admin_payments"],
+    queryFn: getPayments,
   });
 
   if (error) {
@@ -84,10 +83,10 @@ const TransactionsPage = () => {
   }
 
   const { mutate: handleStatus, isPending: statusProcessing } = useMutation({
-    mutationFn: updateTransactionStatus,
+    mutationFn: updatePaymentStatus,
     onSuccess: () => {
       refetch();
-      toast("Transaction status updated successfully.");
+      toast("Payment status updated successfully.");
     },
     onError: (error: any) => {
       const message = parseErrors(error);
@@ -96,15 +95,15 @@ const TransactionsPage = () => {
   });
 
   const handleStatusChange = (
-    currentTransaction: ITransaction,
-    status: TransactionStatus
+    currentPayment: IPayment,
+    status: PaymentStatus
   ) => {
-    if (status === currentTransaction.status) return;
+    if (status === currentPayment.status) return;
 
-    handleStatus({ id: currentTransaction._id, status });
+    handleStatus({ id: currentPayment._id, status });
   };
 
-  const filterStatuses = (status: TransactionStatus) => {
+  const filterStatuses = (status: PaymentStatus) => {
     if (actions[status]) {
       return [status, ...actions[status]];
     }
@@ -124,53 +123,49 @@ const TransactionsPage = () => {
         <>
           <div className="flex justify-between items-center my-2">
             <div>
-              <h1 className="text-xl font-semibold">Transactions</h1>
-              <p className="text-sm text-gray-600">
-                Manage all transactions here.
-              </p>
+              <h1 className="text-xl font-semibold">Payments</h1>
+              <p className="text-sm text-gray-600">Manage all payments here.</p>
             </div>
           </div>
           <div className="border rounded-md mt-4">
             <ScrollArea>
               <AppTable theads={theads}>
-                {transactions && transactions.length > 0 ? (
-                  transactions.map((transaction) => (
-                    <TableRow key={transaction._id}>
+                {payments && payments.length > 0 ? (
+                  payments.map((payment) => (
+                    <TableRow key={payment._id}>
                       <TableCell className="py-3 font-semibold">
-                        {(transaction.user as IUser).email}
+                        {(payment.user as IUser).email}
                       </TableCell>
                       <TableCell className="py-3">
-                        {(transaction.paymentMethod as IPaymentMethod).name}
+                        {(payment.paymentMethod as IPaymentMethod).name}
+                      </TableCell>
+
+                      <TableCell className="py-3">${payment.amount}</TableCell>
+
+                      <TableCell className="py-3">
+                        {payment.phoneNumber}
                       </TableCell>
 
                       <TableCell className="py-3">
-                        ${transaction.amount}
+                        {payment.senderAccountHolderName}
                       </TableCell>
 
                       <TableCell className="py-3">
-                        {transaction.phoneNumber}
-                      </TableCell>
-
-                      <TableCell className="py-3">
-                        {transaction.senderAccountHolderName}
-                      </TableCell>
-
-                      <TableCell className="py-3">
-                        {transaction.destinationAcountKey}
+                        {payment.destinationAcountKey}
                       </TableCell>
 
                       <TableCell className="py-3">
                         <div
                           className={cn("grid gap-2", {
                             "grid-cols-1":
-                              transaction.paymentScreenshots.length === 1,
+                              payment.paymentScreenshots.length === 1,
                             "grid-cols-2":
-                              transaction.paymentScreenshots.length === 2,
+                              payment.paymentScreenshots.length === 2,
                             "grid-cols-3":
-                              transaction.paymentScreenshots.length >= 3,
+                              payment.paymentScreenshots.length >= 3,
                           })}
                         >
-                          {transaction.paymentScreenshots.map((screenshot) => (
+                          {payment.paymentScreenshots.map((screenshot) => (
                             <PhotoPreview
                               key={screenshot}
                               src={screenshot}
@@ -185,12 +180,9 @@ const TransactionsPage = () => {
 
                       <TableCell className="py-3 ">
                         <Select
-                          defaultValue={transaction.status}
+                          defaultValue={payment.status}
                           onValueChange={(value) =>
-                            handleStatusChange(
-                              transaction,
-                              value as TransactionStatus
-                            )
+                            handleStatusChange(payment, value as PaymentStatus)
                           }
                         >
                           <SelectTrigger disabled={statusProcessing}>
@@ -198,13 +190,11 @@ const TransactionsPage = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              {filterStatuses(transaction.status).map(
-                                (status) => (
-                                  <SelectItem key={status} value={status}>
-                                    <span className="capitalize">{status}</span>
-                                  </SelectItem>
-                                )
-                              )}
+                              {filterStatuses(payment.status).map((status) => (
+                                <SelectItem key={status} value={status}>
+                                  <span className="capitalize">{status}</span>
+                                </SelectItem>
+                              ))}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
@@ -217,7 +207,7 @@ const TransactionsPage = () => {
                           className="cursor-pointer"
                           onClick={() => {
                             setOpenConfirm(true);
-                            setDeleteableId(transaction._id);
+                            setDeleteableId(payment._id);
                           }}
                         >
                           <Trash className="size-4 text-destructive/80" />
@@ -231,7 +221,7 @@ const TransactionsPage = () => {
                       colSpan={theads.length}
                       className="text-center py-6"
                     >
-                      No payment method found.
+                      No payment found.
                     </TableCell>
                   </TableRow>
                 )}
@@ -243,7 +233,7 @@ const TransactionsPage = () => {
             open={openConfirm}
             setOpen={setOpenConfirm}
             onConfirm={() => handleDelete(deleteableId!)}
-            text="Are you sure you want to delete this method?"
+            text="Are you sure you want to delete this payment?"
             confrimProcessing={isDeleting}
           />
         </>
@@ -252,4 +242,4 @@ const TransactionsPage = () => {
   );
 };
 
-export default TransactionsPage;
+export default PaymentsPage;

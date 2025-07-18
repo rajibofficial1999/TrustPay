@@ -34,10 +34,10 @@ const PrivacyPage = () => {
             <li>Payment information (PayPal email, bank details, etc.)</li>
           </ul>
 
-          <h3 className="font-semibold text-lg mt-2">b. Transaction Details</h3>
+          <h3 className="font-semibold text-lg mt-2">b. Payment Details</h3>
           <ul className="list-disc list-inside ml-2">
             <li>Amount sent or received</li>
-            <li>Purpose of transaction</li>
+            <li>Purpose of payment</li>
             <li>Payment history</li>
             <li>Delivery confirmation status</li>
           </ul>
@@ -56,7 +56,7 @@ const PrivacyPage = () => {
         <div className="mt-10">
           <ListHeader>2. How We Use Your Information</ListHeader>
           <ul className="list-disc list-inside ml-2">
-            <li>To process and manage secure transactions</li>
+            <li>To process and manage secure payments</li>
             <li>To verify user identities</li>
             <li>To communicate important updates</li>
             <li>To prevent fraud and suspicious activities</li>
@@ -73,7 +73,7 @@ const PrivacyPage = () => {
             third parties. We only share data:
           </p>
           <ul className="list-disc list-inside ml-2">
-            <li>With payment processors to complete transactions</li>
+            <li>With payment processors to complete payments</li>
             <li>With law enforcement when legally required</li>
             <li>With service providers who help run our platform securely</li>
           </ul>

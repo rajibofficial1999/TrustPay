@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 const protectedRoutes = [
   "/my-account",
   "/send-money",
-  "/transactions",
+  "/payments",
   "/admin/dashboard",
-  "/admin/transactions",
+  "/admin/payments",
   "/admin/payment-methods",
   "/admin/users",
 ];

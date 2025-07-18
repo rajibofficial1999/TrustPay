@@ -1,4 +1,4 @@
-import { email, z } from "zod";
+import { z } from "zod";
 
 export const signUpSchema = z.object({
   fullName: z
@@ -37,7 +37,7 @@ export const paymentMethodSchema = z.object({
   logo: z.any().optional(),
 });
 
-export const transactionSchema = z.object({
+export const paymentSchema = z.object({
   amount: z.number().min(1, "Amount is required"),
   receiverAccount: z.string().min(1, "Receiver account is required"),
   accountHolderName: z.string().min(1, "Account holder name is required"),

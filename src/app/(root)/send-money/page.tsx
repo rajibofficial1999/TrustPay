@@ -2,8 +2,8 @@
 
 import { getPaymentMethods } from "@/actions/payment_method";
 import CustomButton from "@/components/custom-button";
-import TransactionForm from "@/components/transaction-form";
-import TransactionTable from "@/components/transaction-table";
+import PaymentForm from "@/components/payment-form";
+import PaymentTable from "@/components/payment-table";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -223,12 +223,12 @@ const SendMoneyPage = () => {
             </CustomButton>
           </div>
         ) : (
-          <TransactionForm method={method} />
+          <PaymentForm method={method} />
         )}
       </div>
 
       <div className="max-w-3xl lg:max-w-4xl bg-white w-full mx-auto py-10 px-6 sm:px-10 rounded-xl flex flex-col items-center text-foreground/80 mt-10">
-        <TransactionTable isLimited={true} />
+        <PaymentTable isLimited={true} />
       </div>
     </div>
   );

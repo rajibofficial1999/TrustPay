@@ -3,15 +3,15 @@ import CustomButton from "./custom-button";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  transaction: ITransaction;
+  payment: IPayment;
   processingState: ProcessingStateProps;
   setOpenConfirm: React.Dispatch<React.SetStateAction<boolean>>;
-  setStatus: React.Dispatch<React.SetStateAction<TransactionStatus | null>>;
+  setStatus: React.Dispatch<React.SetStateAction<PaymentStatus | null>>;
   isMobile?: boolean;
 }
 
 const ClientStatusButton: React.FC<Props> = ({
-  transaction,
+  payment,
   processingState,
   setOpenConfirm,
   setStatus,
@@ -19,7 +19,7 @@ const ClientStatusButton: React.FC<Props> = ({
 }) => {
   return (
     <>
-      {transaction.status === "pending" && (
+      {payment.status === "pending" && (
         <CustomButton
           processing={processingState["cancelled"]}
           onClick={() => {
@@ -32,12 +32,11 @@ const ClientStatusButton: React.FC<Props> = ({
         </CustomButton>
       )}
 
-      {(transaction?.status === "cancelled" ||
-        transaction?.status === "approved") && (
+      {(payment?.status === "cancelled" || payment?.status === "approved") && (
         <div
           className={cn("gap-2", {
             "w-full flex-col flex items-center": isMobile,
-            "grid grid-cols-2": !isMobile && transaction?.status === "approved",
+            "grid grid-cols-2": !isMobile && payment?.status === "approved",
           })}
         >
           <CustomButton
@@ -48,13 +47,13 @@ const ClientStatusButton: React.FC<Props> = ({
             }}
             className={cn("text-white mt-0 bg-green-500 hover:bg-green-600", {
               "!bg-destructive/70 hover:!bg-destructive/80":
-                transaction?.status === "approved",
+                payment?.status === "approved",
             })}
           >
             Refund Payment
           </CustomButton>
 
-          {transaction?.status === "approved" && (
+          {payment?.status === "approved" && (
             <CustomButton
               processing={processingState["released"]}
               onClick={() => {

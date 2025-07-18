@@ -1,6 +1,6 @@
 import cloudinary from "@/lib/api/cloudinary";
 import dbConnect from "@/lib/db";
-import { Transaction } from "@/lib/models";
+import { Payment } from "@/lib/models";
 import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,28 +18,28 @@ export async function GET(
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid transaction id",
+          message: "Invalid payment id",
         },
         { status: 400 }
       );
     }
 
-    const transaction = await Transaction.findById(id).populate(
+    const payment = await Payment.findById(id).populate(
       "paymentMethod",
       "name logo"
     );
 
-    if (!transaction) {
+    if (!payment) {
       return NextResponse.json(
         {
           success: false,
-          message: "Transaction not found",
+          message: "Payment not found",
         },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(transaction, {
+    return NextResponse.json(payment, {
       status: 200,
     });
   } catch (error: any) {
@@ -81,32 +81,32 @@ export async function DELETE(
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid transaction id",
+          message: "Invalid payment id",
         },
         { status: 400 }
       );
     }
 
-    const transaction = await Transaction.findById(id);
+    const payment = await Payment.findById(id);
 
-    if (!transaction) {
+    if (!payment) {
       return NextResponse.json(
         {
           success: false,
-          message: "Transaction not found",
+          message: "Payment not found",
         },
         { status: 404 }
       );
     }
 
-    for (const public_id of transaction.paymentScreenshotsPublicIds) {
+    for (const public_id of payment.paymentScreenshotsPublicIds) {
       cloudinary.uploader.destroy(public_id);
     }
 
-    await transaction.deleteOne();
+    await payment.deleteOne();
 
     return NextResponse.json(
-      { message: "Transaction deleted successfully" },
+      { message: "Payment deleted successfully" },
       {
         status: 200,
       }

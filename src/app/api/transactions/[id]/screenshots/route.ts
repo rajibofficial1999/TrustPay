@@ -1,6 +1,6 @@
 import { parseFormData, uploadFile } from "@/lib/api/utils";
 import dbConnect from "@/lib/db";
-import { Transaction } from "@/lib/models";
+import { Payment } from "@/lib/models";
 import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,7 +17,7 @@ export async function PUT(
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid transaction id",
+          message: "Invalid payment id",
         },
         { status: 400 }
       );
@@ -33,21 +33,21 @@ export async function PUT(
       );
     }
 
-    const transaction = await Transaction.findById(id);
+    const payment = await Payment.findById(id);
 
-    if (!transaction) {
+    if (!payment) {
       return NextResponse.json(
-        { message: "Transaction not found" },
+        { message: "Payment not found" },
         { status: 400 }
       );
     }
 
     const result = (await uploadFile(screenshot)) as any;
 
-    transaction.paymentScreenshots.push(result.secure_url);
-    transaction.paymentScreenshotsPublicIds.push(result.public_id);
+    payment.paymentScreenshots.push(result.secure_url);
+    payment.paymentScreenshotsPublicIds.push(result.public_id);
 
-    await transaction.save();
+    await payment.save();
 
     return NextResponse.json(
       { message: "Payment screenshot uploaded successfully" },

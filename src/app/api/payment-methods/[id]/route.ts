@@ -1,7 +1,7 @@
 import cloudinary from "@/lib/api/cloudinary";
 import { parseFormData, uploadFile } from "@/lib/api/utils";
 import dbConnect from "@/lib/db";
-import { PaymentMethod, Transaction } from "@/lib/models";
+import { PaymentMethod, Payment } from "@/lib/models";
 import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
@@ -205,17 +205,17 @@ export async function DELETE(
       );
     }
 
-    const transactions = await Transaction.find({
+    const payments = await Payment.find({
       paymentMethod: paymentMethod._id,
     });
 
-    for (const transaction of transactions) {
-      for (const public_id of transaction.paymentScreenshotsPublicIds) {
+    for (const payment of payments) {
+      for (const public_id of payment.paymentScreenshotsPublicIds) {
         cloudinary.uploader.destroy(public_id);
       }
     }
 
-    await Transaction.deleteMany({
+    await Payment.deleteMany({
       paymentMethod: paymentMethod._id,
     });
 

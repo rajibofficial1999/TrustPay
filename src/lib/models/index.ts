@@ -1,5 +1,5 @@
 import { User } from "./User";
 import { PaymentMethod } from "./PaymentMethod";
-import { Transaction } from "./Transaction";
+import { Payment } from "./Payment";
 
-export { User, PaymentMethod, Transaction };
+export { User, PaymentMethod, Payment };

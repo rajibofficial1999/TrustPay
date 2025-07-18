@@ -6,7 +6,7 @@ import {
   setPasswordSchema,
   signInSchema,
   signUpSchema,
-  transactionSchema,
+  paymentSchema,
   userCreateSchema,
   userUpdateSchema,
 } from "@/lib/validator";
@@ -15,7 +15,7 @@ declare global {
   type SignInFormData = z.infer<typeof signInSchema>;
   type SignUpFormData = z.infer<typeof signUpSchema>;
   type PaymentMethodFormData = z.infer<typeof paymentMethodSchema>;
-  type TransactionFormData = z.infer<typeof transactionSchema>;
+  type PaymentFormData = z.infer<typeof paymentSchema>;
   type SetPasswordFormData = z.infer<typeof setPasswordSchema>;
   type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;
   type UserCreateFormData = z.infer<typeof userCreateSchema>;
@@ -27,7 +27,7 @@ declare global {
     released: boolean;
   }
 
-  type TransactionStatus =
+  type PaymentStatus =
     | "approved"
     | "pending"
     | "cancelled"
@@ -62,7 +62,7 @@ declare global {
     updatedAt: Date;
   }
 
-  interface ITransaction extends Document {
+  interface IPayment extends Document {
     _id: string;
     amount: number;
     paymentScreenshots: string[];
@@ -70,7 +70,7 @@ declare global {
     phoneNumber: string;
     senderAccountHolderName?: string;
     destinationAcountKey?: string;
-    status: TransactionStatus;
+    status: PaymentStatus;
     paymentMethod: Types.ObjectId | IPaymentMethod;
     user: Types.ObjectId | IUser;
     createdAt: Date;

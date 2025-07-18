@@ -2,7 +2,7 @@ import React from "react";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
 
-const TransactionStatus = ({ status }: { status: TransactionStatus }) => {
+const PaymentStatusBadge = ({ status }: { status: PaymentStatus }) => {
   const filterStatus = status.replace(/_/g, " ");
 
   return (
@@ -22,4 +22,4 @@ const TransactionStatus = ({ status }: { status: TransactionStatus }) => {
   );
 };
 
-export default TransactionStatus;
+export default PaymentStatusBadge;

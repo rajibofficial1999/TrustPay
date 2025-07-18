@@ -1,6 +1,6 @@
 import cloudinary from "@/lib/api/cloudinary";
 import dbConnect from "@/lib/db";
-import { Transaction, User } from "@/lib/models";
+import { Payment, User } from "@/lib/models";
 import { isStrongPassword } from "@/lib/utils";
 import { Types } from "mongoose";
 import { getToken } from "next-auth/jwt";
@@ -209,17 +209,17 @@ export async function DELETE(
       );
     }
 
-    const transactions = await Transaction.find({
+    const payments = await Payment.find({
       user: user._id,
     });
 
-    for (const transaction of transactions) {
-      for (const public_id of transaction.paymentScreenshotsPublicIds) {
+    for (const payment of payments) {
+      for (const public_id of payment.paymentScreenshotsPublicIds) {
         cloudinary.uploader.destroy(public_id);
       }
     }
 
-    await Transaction.deleteMany({
+    await Payment.deleteMany({
       user: user._id,
     });
 

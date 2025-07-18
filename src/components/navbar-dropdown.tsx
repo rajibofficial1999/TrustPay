@@ -41,9 +41,9 @@ const NavbarDropdown = ({ user }: { user: IUser }) => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer py-2" asChild>
-          <Link href="/transactions">
+          <Link href="/payments">
             <Captions />
-            <span>Transactions</span>
+            <span>Payments</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem

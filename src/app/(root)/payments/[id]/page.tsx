@@ -1,16 +1,16 @@
 "use client";
 
 import {
-  getTransaction,
-  updateTransactionStatus,
+  getPayment,
+  updatePaymentStatus,
   uploadScreenshot,
-} from "@/actions/transaction";
+} from "@/actions/payment";
 import AppAlertDialog from "@/components/app-alert-dialog";
 import ClientStatusButton from "@/components/client-status-button";
 import CustomButton from "@/components/custom-button";
 import Loader from "@/components/loader";
+import PaymentStatusBadge from "@/components/payment-status-badge";
 import PhotoPreview from "@/components/photo-preview";
-import TransactionStatus from "@/components/transaction-status";
 import { cn, formatted, parseErrors } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { LoaderCircle, Plus, WalletCards } from "lucide-react";
@@ -19,13 +19,13 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useRef, useState } from "react";
 
-const TransactionDetailsPage = () => {
+const PaymentDetailsPage = () => {
   const params = useParams();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [status, setStatus] = useState<TransactionStatus | null>(null);
+  const [status, setStatus] = useState<PaymentStatus | null>(null);
 
   const [processingState, setProcessingState] = useState<ProcessingStateProps>({
     cancelled: false,
@@ -36,19 +36,19 @@ const TransactionDetailsPage = () => {
   const uploadRef = useRef<HTMLInputElement>(null);
 
   const {
-    data: transaction,
+    data: payment,
     isPending,
     refetch,
     error,
-  } = useQuery<ITransaction>({
-    queryKey: ["transaction", params.id],
-    queryFn: () => getTransaction(params.id as string),
+  } = useQuery<IPayment>({
+    queryKey: ["payment", params.id],
+    queryFn: () => getPayment(params.id as string),
     enabled: !!params.id,
     retry: false,
   });
 
   const { mutate: handleStatus, isPending: statusProcessing } = useMutation({
-    mutationFn: updateTransactionStatus,
+    mutationFn: updatePaymentStatus,
     onSuccess: () => {
       refetch();
       setOpenConfirm(false);
@@ -110,9 +110,9 @@ const TransactionDetailsPage = () => {
         <Loader isLoading={isPending}>
           <div className="w-full">
             <div>
-              <h1 className="text-xl font-bold">Transaction details</h1>
+              <h1 className="text-xl font-bold">Payment details</h1>
               <p className="text-foreground/70">
-                Your Payment History – Track Every Dollar Sent, Received or
+                Your Payment History. Track Every Dollar Sent, Received or
                 Refunded.
               </p>
             </div>
@@ -121,25 +121,23 @@ const TransactionDetailsPage = () => {
                 <div className="mt-2 text-sm text-red-500">{error.message}</div>
 
                 {error.message.includes("404") && (
-                  <Link href="/transactions">
-                    <CustomButton className="mt-4">
-                      Go to transactions
-                    </CustomButton>
+                  <Link href="/payments">
+                    <CustomButton className="mt-4">Go to payments</CustomButton>
                   </Link>
                 )}
               </div>
             )}
-            {transaction && !error && (
+            {payment && !error && (
               <>
                 <div className="flex justify-between items-center mt-7">
                   <div className="flex gap-2">
-                    {(transaction.paymentMethod as IPaymentMethod).logo ? (
+                    {(payment.paymentMethod as IPaymentMethod).logo ? (
                       <Image
                         src={
-                          (transaction.paymentMethod as IPaymentMethod)
+                          (payment.paymentMethod as IPaymentMethod)
                             .logo as string
                         }
-                        alt={(transaction.paymentMethod as IPaymentMethod).name}
+                        alt={(payment.paymentMethod as IPaymentMethod).name}
                         width={38}
                         height={38}
                         className="rounded-md object-contain border py-0.5 px-1.5"
@@ -151,16 +149,16 @@ const TransactionDetailsPage = () => {
                     )}
                     <div>
                       <h1 className="font-semibold capitalize text-foreground/70">
-                        {(transaction.paymentMethod as IPaymentMethod).name}
+                        {(payment.paymentMethod as IPaymentMethod).name}
                       </h1>
                       <p className="text-sm text-foreground/70">
-                        {transaction.senderAccountHolderName}
+                        {payment.senderAccountHolderName}
                       </p>
                     </div>
                   </div>
                   <div className="hidden sm:inline-block">
                     <ClientStatusButton
-                      transaction={transaction}
+                      payment={payment}
                       processingState={processingState}
                       setOpenConfirm={setOpenConfirm}
                       setStatus={setStatus}
@@ -171,7 +169,7 @@ const TransactionDetailsPage = () => {
                   <ListItem>
                     <h2 className="font-semibold text-foreground/70">Amount</h2>
                     <p className="text-foreground/70">
-                      $<span>{transaction.amount}</span>
+                      $<span>{payment.amount}</span>
                     </p>
                   </ListItem>
                   <ListItem>
@@ -179,27 +177,25 @@ const TransactionDetailsPage = () => {
                       Receiver
                     </h2>
                     <p className="text-foreground/70">
-                      {transaction.destinationAcountKey}
+                      {payment.destinationAcountKey}
                     </p>
                   </ListItem>
                   <ListItem>
                     <h2 className="font-semibold text-foreground/70">
                       Phone number
                     </h2>
-                    <p className="text-foreground/70">
-                      {transaction.phoneNumber}
-                    </p>
+                    <p className="text-foreground/70">{payment.phoneNumber}</p>
                   </ListItem>
                   <ListItem>
                     <h2 className="font-semibold text-foreground/70">Status</h2>
-                    <TransactionStatus status={transaction.status} />
+                    <PaymentStatusBadge status={payment.status} />
                   </ListItem>
                   <ListItem>
                     <h2 className="font-semibold text-foreground/70">
                       Paid at
                     </h2>
                     <p className="text-foreground/70 text-sm">
-                      {formatted(transaction.createdAt.toString())}
+                      {formatted(payment.createdAt.toString())}
                     </p>
                   </ListItem>
                   <ListItem className="items-start flex-col">
@@ -207,7 +203,7 @@ const TransactionDetailsPage = () => {
                       Screenshots
                     </h2>
                     <div className="w-full grid-cols-2 grid sm:grid-cols-3 gap-2">
-                      {transaction.paymentScreenshots.map(
+                      {payment.paymentScreenshots.map(
                         (screenshot: string, index: number) => (
                           <div
                             key={index}
@@ -264,10 +260,10 @@ const TransactionDetailsPage = () => {
             )}
           </div>
 
-          {transaction && !error && (
+          {payment && !error && (
             <div className="flex justify-end mt-10 items-center w-full sm:hidden">
               <ClientStatusButton
-                transaction={transaction}
+                payment={payment}
                 processingState={processingState}
                 setOpenConfirm={setOpenConfirm}
                 setStatus={setStatus}
@@ -333,4 +329,4 @@ const ListItem = ({
   </div>
 );
 
-export default TransactionDetailsPage;
+export default PaymentDetailsPage;

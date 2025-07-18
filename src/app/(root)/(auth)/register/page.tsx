@@ -118,7 +118,7 @@ const Ragister = () => {
         </h1>
         <p className="text-left md:text-center w-full mt-2">
           Join 10,000+ creators and businesses who trust {appName} for secure
-          transactions.
+          payments.
         </p>
         <form
           onSubmit={handleSubmit(onSubmit)}
