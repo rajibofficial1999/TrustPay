@@ -22,7 +22,6 @@ declare global {
   type UserUpdateFormData = z.infer<typeof userUpdateSchema>;
 
   interface ProcessingStateProps {
-    cancelled: boolean;
     refund_requested: boolean;
     released: boolean;
   }

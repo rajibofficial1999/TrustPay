@@ -19,20 +19,7 @@ const ClientStatusButton: React.FC<Props> = ({
 }) => {
   return (
     <>
-      {payment.status === "pending" && (
-        <CustomButton
-          processing={processingState["cancelled"]}
-          onClick={() => {
-            setOpenConfirm(true);
-            setStatus("cancelled");
-          }}
-          className="text-white mt-0 bg-destructive/70 hover:bg-destructive/80"
-        >
-          Cancel Payment
-        </CustomButton>
-      )}
-
-      {(payment?.status === "cancelled" || payment?.status === "approved") && (
+      {payment?.status === "approved" && (
         <div
           className={cn("gap-2", {
             "w-full flex-col flex items-center": isMobile,
@@ -45,26 +32,21 @@ const ClientStatusButton: React.FC<Props> = ({
               setOpenConfirm(true);
               setStatus("refund_requested");
             }}
-            className={cn("text-white mt-0 bg-green-500 hover:bg-green-600", {
-              "!bg-destructive/70 hover:!bg-destructive/80":
-                payment?.status === "approved",
-            })}
+            className="text-white mt-0 !bg-destructive/70 hover:!bg-destructive/80"
           >
             Refund Payment
           </CustomButton>
 
-          {payment?.status === "approved" && (
-            <CustomButton
-              processing={processingState["released"]}
-              onClick={() => {
-                setOpenConfirm(true);
-                setStatus("released");
-              }}
-              className="text-white mt-0 bg-green-500 hover:bg-green-600"
-            >
-              Release
-            </CustomButton>
-          )}
+          <CustomButton
+            processing={processingState["released"]}
+            onClick={() => {
+              setOpenConfirm(true);
+              setStatus("released");
+            }}
+            className="text-white mt-0 bg-green-500 hover:bg-green-600"
+          >
+            Release
+          </CustomButton>
         </div>
       )}
     </>

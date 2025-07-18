@@ -86,7 +86,7 @@ const PaymentForm = ({ method }: PaymentFormProps) => {
     formData.append("amount", data.amount.toString());
     formData.append("phoneNumber", data.phoneNumber);
     formData.append("senderAccountHolderName", data.accountHolderName);
-    formData.append("destinationAcountKey", data.receiverAccount);
+    formData.append("destinationAcountKey", data.receiverEmail);
     formData.append("methodId", method);
 
     handleCreatePayment(formData);
@@ -120,19 +120,6 @@ const PaymentForm = ({ method }: PaymentFormProps) => {
             <ErrorMessage error={errors} label="amount" />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="receiver_account">Receiver account</Label>
-            <Input
-              type="text"
-              id="receiver_account"
-              placeholder="Email, Phone number or Tag"
-              className="p-6 rounded-full placeholder:text-sm"
-              {...register("receiverAccount")}
-            />
-            <ErrorMessage error={errors} label="receiverAccount" />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="space-y-2">
             <Label htmlFor="name">Account holder name</Label>
             <Input
               type="text"
@@ -143,6 +130,8 @@ const PaymentForm = ({ method }: PaymentFormProps) => {
             />
             <ErrorMessage error={errors} label="accountHolderName" />
           </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-2">
             <Label htmlFor="phoneNumber">Phone number</Label>
             <Input
@@ -153,6 +142,17 @@ const PaymentForm = ({ method }: PaymentFormProps) => {
               {...register("phoneNumber")}
             />
             <ErrorMessage error={errors} label="phoneNumber" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="receiverEmail">Receiver email</Label>
+            <Input
+              type="email"
+              id="receiverEmail"
+              placeholder="Enter receiver email address"
+              className="p-6 rounded-full placeholder:text-sm"
+              {...register("receiverEmail")}
+            />
+            <ErrorMessage error={errors} label="receiverEmail" />
           </div>
         </div>
         <div className="space-y-2">

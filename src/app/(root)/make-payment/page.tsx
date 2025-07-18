@@ -106,7 +106,7 @@ const SendMoneyPage = () => {
         <h3 className="font-semibold uppercase">Pay now!</h3>
 
         <p className="text-center mt-2">
-          Choose Your Preferred Payment Method – Fast, <br />
+          Choose Your Preferred Payment Method. Fast, <br />
           Secure & Always Protected.
         </p>
         {!method ? (

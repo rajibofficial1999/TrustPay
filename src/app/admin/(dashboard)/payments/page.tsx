@@ -46,8 +46,12 @@ const theads = [
 
 const actions: ActionsType = {
   pending: ["approved", "cancelled", "failed"],
-  cancelled: ["refunded"],
-  refund_requested: ["refunded"],
+  approved: ["cancelled", "refunded", "pending", "failed"],
+  released: ["cancelled", "refunded", "pending", "failed"],
+  refunded: [],
+  failed: ["cancelled", "refunded", "pending", "approved"],
+  cancelled: ["refunded", "approved", "failed", "pending"],
+  refund_requested: ["refunded", "cancelled", "failed", "pending"],
 };
 
 const PaymentsPage = () => {

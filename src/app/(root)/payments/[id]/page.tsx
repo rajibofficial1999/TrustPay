@@ -28,7 +28,6 @@ const PaymentDetailsPage = () => {
   const [status, setStatus] = useState<PaymentStatus | null>(null);
 
   const [processingState, setProcessingState] = useState<ProcessingStateProps>({
-    cancelled: false,
     refund_requested: false,
     released: false,
   });
@@ -60,7 +59,6 @@ const PaymentDetailsPage = () => {
     },
     onSettled: () => {
       setProcessingState({
-        cancelled: false,
         refund_requested: false,
         released: false,
       });
@@ -285,16 +283,12 @@ const PaymentDetailsPage = () => {
             handleStatus({ id: params.id as string, status });
           }}
           text={
-            status === "cancelled"
-              ? "Are you sure you want to cancel this payment?"
-              : status === "refund_requested"
+            status === "refund_requested"
               ? "Are you sure you want to refund this payment?"
               : "Are you sure you want to release this payment?"
           }
           title={
-            status === "cancelled"
-              ? "Payment Cancellation"
-              : status === "refund_requested"
+            status === "refund_requested"
               ? "Refund Request"
               : "Release confirmation"
           }

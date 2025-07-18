@@ -39,7 +39,7 @@ export const paymentMethodSchema = z.object({
 
 export const paymentSchema = z.object({
   amount: z.number().min(1, "Amount is required"),
-  receiverAccount: z.string().min(1, "Receiver account is required"),
+  receiverEmail: z.string().min(1, "Receiver account is required"),
   accountHolderName: z.string().min(1, "Account holder name is required"),
   phoneNumber: z.string().min(1, "Phone number is required"),
   paymentScreenshot: z
@@ -47,8 +47,7 @@ export const paymentSchema = z.object({
     .refine(
       (file) => file && file.length === 1,
       "Payment screenshot is required"
-    )
-    .optional(),
+    ),
 });
 
 export const personalInfoSchema = z.object({

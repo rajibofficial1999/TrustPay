@@ -50,10 +50,11 @@ export async function PUT(
       "refund_requested",
       "approved",
       "failed",
+      "pending",
     ];
 
     if (token.role === "user") {
-      validStatuses = ["cancelled", "released", "refund_requested"];
+      validStatuses = ["released", "refund_requested"];
     }
 
     if (!validStatuses.includes(status)) {
@@ -73,18 +74,18 @@ export async function PUT(
 
     const actions: ActionsType = {
       pending: ["approved", "cancelled", "failed"],
-      approved: ["released", "refund_requested"],
-      cancelled: ["refund_requested", "refunded"],
-      refund_requested: ["refunded"],
+      approved: ["cancelled", "refunded", "pending", "failed"],
+      released: ["cancelled", "refunded", "pending", "failed"],
+      refunded: [],
+      failed: ["cancelled", "refunded", "pending", "approved"],
+      cancelled: ["refunded", "approved", "failed", "pending"],
+      refund_requested: ["refunded", "cancelled", "failed", "pending"],
     };
 
     const validActions = actions[currentStatus];
 
     if (!validActions.includes(status)) {
-      return NextResponse.json(
-        { message: "Invalid status transition" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Invalid status" }, { status: 400 });
     }
 
     payment.status = status;
