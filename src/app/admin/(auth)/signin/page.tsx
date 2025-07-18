@@ -112,15 +112,6 @@ const SignInPage = () => {
           {isSubmitting && <LoaderCircle className="h-5 w-5 animate-spin" />}
           Sign in
         </Button>
-        {/* <p className="text-sm font-light text-gray-500">
-          Don’t have an account yet?{" "}
-          <Link
-            href="/signup"
-            className="font-medium text-primary hover:underline"
-          >
-            Sign up
-          </Link>
-        </p> */}
       </form>
     </>
   );
